@@ -56,30 +56,20 @@ public class DFAState extends State {
     }
 
     /**
-     * Adds an alphabet character to the state's alphabet array. Then, sorts the array
-     * incrementally in order to help the print functions of each state match for a full
-     * DFA transition table print
-     *
+     * Adds an alphabet character to the state's alphabet array.
+     * Will not add a duplicative character that is already in the array
      * @param alphabetChar
      */
     public void updateAlphabet(char alphabetChar) {
         for (int i = 0; i < alphabet.length; i++) {
-            // Iterate through the array until the first null character
-            // Replace the null character with the new alphabet character
+            // While iterating through the array, if the character is found in the array
+            // exit without adding it again.
+            if (alphabet[i] == alphabetChar) {
+                return;
+            }
+            // Add the character in the first empty index in the array
             if (alphabet[i] == '\u0000') {
                 alphabet[i] = alphabetChar;
-
-                // Because the alphabet array is initialized empty, need a temp array for sorting
-                // Create a temp array and copy all non-null characters into the temp array
-                char[] tempArray = new char[i + 1];
-                System.arraycopy(alphabet, 0, tempArray, 0, i + 1);
-
-                // Sort the temp array
-                Arrays.sort(tempArray);
-
-                // Copy the sorted temp ardray back into the alphabet array
-                System.arraycopy(tempArray, 0, alphabet, 0, i + 1);
-
                 return;
             }
         }
