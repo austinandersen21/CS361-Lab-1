@@ -8,38 +8,34 @@ import java.util.HashMap;
 import javax.sound.midi.Sequence;
 
 import fa.dfa.DFAState;
+import fa.State;
 
 public class DFA implements DFAInterface {
 	
-	//TreeSet<DFAState> DFA;
-	
 	/* DFA 5-tuple */
-	DFAState startState;
-	Set<DFAState> states;
-	Set<Character> sigma;
-	Set<DFAState> finalStates;
-	//HashSet<HashMap<DFAState, Character>> transitions;
+	private DFAState startState;
+	private Set<DFAState> states;
+	private Set<Character> sigma;
+	private Set<DFAState> finalStates;
 	
-	/* FIXME
-	 * DFA constructor
-	 */
 	public DFA() {
-		//DFA = new TreeSet<State>();
-		
+
 		/* Instantiate 5-tuple */
 		startState = null;
 		states = new LinkedHashSet<DFAState>();
 		sigma = new LinkedHashSet<Character>();
 		finalStates = new LinkedHashSet<DFAState>();
-		//transitions = new TreeSet<TreeMap<DFAState, Character>>();
-		
+
 	}
 
 	//DONE
 	@Override
 	public boolean addState(String name) {
-		DFAState newState = new DFAState(name);
-		states.add(newState);
+
+		DFAState newState = null;
+		newState = new DFAState(name);
+		return states.add(newState);
+
 	}
 
 	//DONE
@@ -53,8 +49,7 @@ public class DFA implements DFAInterface {
 			curr = itr.next();
 			if(curr.getName() == name) {
 				
-				//FIXME Set search to final
-				curr.isFinal(); 
+				curr.setFinal(true); 
 				finalStates.add(curr);
 				
 			}
@@ -77,6 +72,7 @@ public class DFA implements DFAInterface {
 			if(curr.getName() == name) {
 
 				startState = curr;
+				curr.setStart(true);
 				return true;
 
 			}
@@ -100,11 +96,11 @@ public class DFA implements DFAInterface {
 		
 		int i = 0;
 		DFAState curr = startState;
-		HashMap<DFAState, Character> currTransitions = null;
+		HashMap<Character, String> currTransitions = null;
 
 		while(i < s.length()) {
 
-			currTransitions = curr.getTransitions;
+			currTransitions = curr.getTransitionOut();
 
 			if(currTransitions.get(Character.valueOf(s.charAt[i])) != null) {
 
@@ -125,8 +121,9 @@ public class DFA implements DFAInterface {
 		return sigma;
 	}
 
+	//DONE
 	@Override
-	public State getState(String name) {
+	public DFAState getState(String name) {
 		//Search states array to find one with matching name
 		
 		DFAState curr = null;
@@ -151,8 +148,7 @@ public class DFA implements DFAInterface {
 	public boolean isFinal(String name) {
 		
 		DFAState curr = this.getState(name);
-
-		return curr.isFinal();
+		return curr.getIsFinal();
 
 	}
 
@@ -175,21 +171,34 @@ public class DFA implements DFAInterface {
 		//Instantiate variables
 		DFAState fromDFAState = null;
 		DFAState toDFAState = null;
-		Character symbol = null;
+		Character symbol = Character.valueOf(onSymb);
 
-		//Assign values to variables
+		//Get state with matching name
 		fromDFAState = this.getState(fromState);
 		toDFAState = this.getState(toState);
-		symbol = Character.valueOf(onSymb);
 
-		try {
-			fromDFAState.addTransition(toDFAState, symbol);
-		} catch (NullPointerException e) {
-			//If any of the values are still assigned a null value
+		//Check if fromState and toState exists as a state
+		if(fromDFAState == null || toDFAState == null) {
 			return false;
 		}
-		
-		//Else adding transition worked
+
+		boolean hasSymb = false;
+
+		//Check if onSymb is in sigma
+		Iterator itr = sigma.iterator();
+		while(itr.hasNext()) {
+			if(itr.next() == symbol) {
+				hasSymb = true;
+			}
+		}
+
+		//Return false if onSymb is not in sigma
+		if(!hasSymb) {
+			return false;
+		}
+
+		//Add transition and return true
+		fromDFAState.setTransitionOut(onSymb, toState);
 		return true;
 
 	}
@@ -203,10 +212,13 @@ public class DFA implements DFAInterface {
 		Character symbol2 = Character.valueOf(symb2);
 
 		DFA newDFA = new DFA();
+		char addSymb = '1';
 
 		//Create newDFA's sigma set
 		Iterator itr = sigma.iterator();
 		while(itr.hasNext()) {
+
+
 			newDFA.addSigma(itr.next().charValue());
 		}
 		
