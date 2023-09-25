@@ -425,9 +425,8 @@ public class DFA implements DFAInterface {
 		return printString;
 	}
 
+	//DELETE LATER
 	public static void main(String[] args) {
-
-		System.out.println("Hello World");
 
 		DFA thing = new DFA();
 
@@ -459,7 +458,12 @@ public class DFA implements DFAInterface {
 		System.out.println(thing.transitionTable());
 
 		System.out.println(thing.accepts("ab"));
+		System.out.println(thing.accepts("abccccccc"));
+		System.out.println(thing.accepts("baa"));
 
+		DFA dfaSwap = thing.swap('a', 'b');
+
+		System.out.println("\n" + dfaSwap.transitionTable());
 
 	}
 
