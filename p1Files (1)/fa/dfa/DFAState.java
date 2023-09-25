@@ -153,6 +153,26 @@ public class DFAState extends State {
     }
 
     /**
+     * Same method as printTransitionTableRow() above except it returns the string instead
+     * of printing to the terminal
+     * @return the toString that represents the State's row in the transition table
+     */
+    @Override
+    public String toString() {
+        String printString = "";
+        for (int i = 0; i < alphabet.length; i++) {
+            if (alphabet[i] == '\u0000') {
+                break;
+            } else if (getNextStateOnAlphabet(alphabet[i]) == null) {
+                printString += "  ";
+            } else {
+                printString += getNextStateOnAlphabet(alphabet[i]) + " ";
+            }
+        }
+        return printString;
+    }
+
+    /**
      * Method used for testing if the alphabet array was being updated correctly.
      * Prints all characters in the alphabet to the terminal until the first null
      * character is reached. Adds white space in between each character printed
