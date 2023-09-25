@@ -123,7 +123,7 @@ public class DFA implements DFAInterface {
 			// create a state object to store the to state temporarily
 			DFAState tempDFAState = new DFAState("temp");
 
-			// Iterate through the states linkedhashset to get the to state ojbect
+			// Iterate through the states linked hashset to get the to state object
 			for (DFAState state: states) {
 				if (state.getName().equals(toState)) {
 					tempDFAState = state;
@@ -270,4 +270,39 @@ public class DFA implements DFAInterface {
 		return null;
 	}
 
+
+	@Override
+	public String toString() {
+		String printString = "";
+
+		printString += "Q = { ";
+
+		for (DFAState state: states) {
+			printString += state.getName() + " ";
+		}
+		printString += "}\n";
+
+		printString += "Sigma = { ";
+		String sigmaString = "";
+		for (Character c : sigma) {
+			sigmaString += (c + " ");
+		}
+		printString +="}\n";
+		printString +="delta =\n";
+		printString += "\t" + sigmaString + "\n";
+
+		for (DFAState state: states) {
+			printString += state.toString();
+		}
+		printString += "q0 = " + startState.getName();
+
+		printString += "F = { ";
+
+		for (DFAState state: finalStates) {
+			printString += state.getName() + " ";
+		}
+		printString += "}\n";
+
+		return printString;
+	}
 }
