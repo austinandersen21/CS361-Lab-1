@@ -169,6 +169,7 @@ public class DFAState extends State {
                 printString += getNextStateOnAlphabet(alphabet[i]) + " ";
             }
         }
+        printString += "\n";
         return printString;
     }
 
