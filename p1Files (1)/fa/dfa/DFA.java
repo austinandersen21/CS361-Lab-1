@@ -5,11 +5,17 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.HashMap;
 
-import javax.sound.midi.Sequence;
-
 import fa.dfa.DFAState;
 import fa.State;
 
+/**
+ * @author Austin Andersen and Shane Ball
+ * @class CS361
+ * @date September 25th 2023
+ * This class is intended to allow a driver class to create a DFA object 
+ * using the DFAState class. It implements DFAInterface methods, as well
+ * as FAInterface methods
+ */
 public class DFA implements DFAInterface {
 	
 	/* DFA 5-tuple */
@@ -18,6 +24,11 @@ public class DFA implements DFAInterface {
 	private Set<Character> sigma;
 	private Set<DFAState> finalStates;
 	
+	/**
+	 * @author Austin Andersen
+	 * This is the DFA constructor, which instantiates the DFA 5-tuple minus
+	 * the transitions which are already stored in each state
+	 */
 	public DFA() {
 
 		/* Instantiate 5-tuple */
@@ -28,7 +39,6 @@ public class DFA implements DFAInterface {
 
 	}
 
-	//DONE
 	@Override
 	public boolean addState(String name) {
 
@@ -38,14 +48,19 @@ public class DFA implements DFAInterface {
 
 	}
 
-	//DONE
+	/**
+	 * @author Austin Andersen
+	 * @param newState - the new state to be added to the DFA
+	 * @return boolean value representing if the state was added to the set or not
+	 * This second addState class was added for convenience so we could add a
+	 * state directly with it's transitions
+	 */
 	private boolean addState(DFAState newState) {
 
 		return states.add(newState);
 
 	}
 
-	//DONE
 	@Override
 	public boolean setFinal(String name) {
 		
@@ -67,7 +82,6 @@ public class DFA implements DFAInterface {
 		
 	}
 
-	//DONE
 	@Override
 	public boolean setStart(String name) {
 		
@@ -88,7 +102,6 @@ public class DFA implements DFAInterface {
 		return false;
 	}
 
-	//DONE
 	@Override
 	public void addSigma(char symbol) {
 
@@ -125,23 +138,11 @@ public class DFA implements DFAInterface {
 				return false;
 			}
 			// Get the name of the to state
-			String toState = currTransitions.get(currentCharInString);
+			String toStateName = currTransitions.get(Character.valueOf(currentCharInString));
 
-			// create a state object to store the to state temporarily
-			DFAState tempDFAState = new DFAState("temp");
-
-			// Iterate through the states linked hashset to get the to state object
-			for (DFAState state: states) {
-				if (state.getName().equals(toState)) {
-					tempDFAState = state;
-					break;
-				} else {
-					System.out.println("The accepts method couldn't find a to state that should be in the set");
-				}
-			}
 			// Set the current state to the temp state for the next iteration of the loop
 			// or loop exit
-			curr = tempDFAState;
+			curr = this.getState(toStateName);
 
 			i++; // Increment to the next char in the string
 		}
@@ -154,14 +155,12 @@ public class DFA implements DFAInterface {
 		return false;
 	}
 
-	//DONE
 	@Override
 	public Set<Character> getSigma() {
 		
 		return sigma;
 	}
 
-	//DONE
 	@Override
 	public DFAState getState(String name) {
 		//Search states array to find one with matching name
@@ -183,7 +182,6 @@ public class DFA implements DFAInterface {
 
 	}
 
-	//DONE
 	@Override
 	public boolean isFinal(String name) {
 		
@@ -204,21 +202,32 @@ public class DFA implements DFAInterface {
 
 	}
 
-	//DONE
+	/**
+	 * @author Austin Andersen
+	 * @param name - Name of DFAState
+	 * @return true if state with name value "name" exists, and false if not
+	 */
+	private boolean exists(String name) {
+
+		Iterator<DFAState> itr = states.iterator();
+		while(itr.hasNext()) {
+			if(itr.next().getName() == name) {
+				return true;
+			}
+		}
+		
+		return false;
+
+	}
+
 	@Override
 	public boolean addTransition(String fromState, String toState, char onSymb) {
 		
 		//Instantiate variables
-		DFAState fromDFAState = null;
-		DFAState toDFAState = null;
 		Character symbol = Character.valueOf(onSymb);
 
-		//Get state with matching name
-		fromDFAState = this.getState(fromState);
-		toDFAState = this.getState(toState);
-
 		//Check if fromState and toState exists as a state
-		if(fromDFAState == null || toDFAState == null) {
+		if(!exists(fromState) || !exists(toState)) {
 			return false;
 		}
 
@@ -237,13 +246,14 @@ public class DFA implements DFAInterface {
 			return false;
 		}
 
+		DFAState fromDFAState = getState(fromState);
+
 		//Add transition and return true
 		fromDFAState.setTransitionOut(onSymb, toState);
 		return true;
 
 	}
 
-	//FIXME
 	@Override
 	public DFA swap(char symb1, char symb2) {
 
@@ -267,7 +277,7 @@ public class DFA implements DFAInterface {
 		DFAState curr = null;
 		DFAState newState = null;
 
-		while(itr.hasNext()) {
+		while(stateItr.hasNext()) {
 
 			//Create new state for newDFA
 			curr = stateItr.next();
@@ -284,14 +294,14 @@ public class DFA implements DFAInterface {
 			for(Character e : sigma) {
 
 				//If transition exists, create transition for newState
-				if(map.get(e) != null) {
+				if(map.containsKey(e)) {
 
-					if(e == symbol1) {
+					if(e.equals(symbol1)) {
 
 						//Switch transitions on symb1 to symb2
 						newState.setTransitionOut(symb2, map.get(e));
 						
-					} else if(e == symbol2) {
+					} else if(e.equals(symbol2)) {
 
 						//Switch transitions on symb2 to symb1
 						newState.setTransitionOut(symb1, map.get(e));
@@ -329,6 +339,56 @@ public class DFA implements DFAInterface {
 
 	}
 
+	/**
+	 * @author
+	 * @param curr - current state whose transitions are being printed
+	 * @return String of the curr state, followed by each destination on a given character
+	 */
+	private String transitionTableRow(DFAState curr) {
+
+		String returnString = curr.getName();
+
+		HashMap<Character, String> map = curr.getTransitionOut();
+
+		for(Character c : sigma) {
+
+			returnString = returnString.concat("\t");
+
+			if(!map.containsKey(c)) {
+				returnString = returnString.concat("{}");
+			} else {
+			returnString = returnString.concat(map.get(c));
+			}
+
+		}
+
+		return returnString;
+
+	}
+
+	/**
+	 * @author Austin Andersen
+	 * @return String representation of the transition table
+	 * Relies on transitionTableRow class to build each row
+	 */
+	public String transitionTable() {
+
+		String returnString = "State";
+
+		for(Character c : sigma) {
+			returnString = returnString.concat("\t" + c);
+		}
+
+		returnString = returnString.concat("\n");
+
+		Iterator<DFAState> itr = states.iterator();
+		while(itr.hasNext()) {
+			returnString = returnString.concat(transitionTableRow(itr.next()) + "\n");
+		}
+
+		return returnString;
+
+	}
 
 	@Override
 	public String toString() {
@@ -364,4 +424,44 @@ public class DFA implements DFAInterface {
 
 		return printString;
 	}
+
+	public static void main(String[] args) {
+
+		System.out.println("Hello World");
+
+		DFA thing = new DFA();
+
+		DFAState zero = new DFAState("0");
+		DFAState one = new DFAState("1");
+		DFAState two = new DFAState("2");
+
+		thing.addState(zero);
+		thing.addState(one);
+		thing.addState(two);
+
+		thing.addSigma('a');
+		thing.addSigma('b');
+		thing.addSigma('c');
+
+		thing.addTransition("0", "1", 'a');
+		thing.addTransition("0", "0", 'b');
+		thing.addTransition("0", "2", 'c');
+
+		thing.addTransition("1", "2", 'b');
+		thing.addTransition("1", "2", 'c');
+		thing.addTransition("1", "0", 'a');
+
+		thing.addTransition("2", "2", 'c');
+
+		thing.setFinal("2");
+		thing.setStart("0");
+
+		System.out.println(thing.transitionTable());
+
+		System.out.println(thing.accepts("ab"));
+
+
+	}
+
 }
+

@@ -1,14 +1,14 @@
 package fa.dfa;
 
 import fa.State;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Set;
 
 public class DFAState extends State {
     private HashMap<Character, String> transitionsOut;
     private boolean isStart;
     private boolean isFinal;
-    private char[] alphabet;
+    //private char[] alphabet;
 
 
     /**
@@ -21,7 +21,7 @@ public class DFAState extends State {
         transitionsOut = new HashMap<>();
         isFinal = false;
         isStart = false;
-        alphabet = new char[10];
+        //alphabet = new char[10];
     }
 
     /**
@@ -38,8 +38,8 @@ public class DFAState extends State {
         transitionsOut.put(alphabetChar, toStateName);
         isFinal = false;
         isStart = false;
-        alphabet = new char[10];
-        updateAlphabet(alphabetChar);
+        //alphabet = new char[10];
+        //updateAlphabet(alphabetChar);
     }
 
     /**
@@ -51,28 +51,10 @@ public class DFAState extends State {
      * @param toStateName
      */
     public void setTransitionOut(char alphabetChar, String toStateName) {
-        transitionsOut.put(alphabetChar, toStateName);
-        updateAlphabet(alphabetChar);
-    }
 
-    /**
-     * Adds an alphabet character to the state's alphabet array.
-     * Will not add a duplicative character that is already in the array
-     * @param alphabetChar
-     */
-    public void updateAlphabet(char alphabetChar) {
-        for (int i = 0; i < alphabet.length; i++) {
-            // While iterating through the array, if the character is found in the array
-            // exit without adding it again.
-            if (alphabet[i] == alphabetChar) {
-                return;
-            }
-            // Add the character in the first empty index in the array
-            if (alphabet[i] == '\u0000') {
-                alphabet[i] = alphabetChar;
-                return;
-            }
-        }
+        Character transChar = Character.valueOf(alphabetChar);
+
+        transitionsOut.put(transChar, toStateName);
     }
 
     /**
@@ -127,31 +109,6 @@ public class DFAState extends State {
         return transitionsOut.get(alphabetChar);
     }
 
-
-    /**
-     * Prints the state and all possible transition states. If the states
-     * alphabet is kept updated with all possible states in the DFA then it
-     * will print a blank space instead of a state name.
-     */
-    public void printTransitionTableRow() {
-        // Print the states name with a tab after
-        System.out.print(super.toString() + "\t");
-        // Iterate through the alphabet array until the first null character
-        for (int i = 0; i < alphabet.length; i++) {
-            if (alphabet[i] == '\u0000') {
-                break;
-                // Print a blank space on alphabet characters that don't have a transition
-                // for this state
-            } else if (getNextStateOnAlphabet(alphabet[i]) == null) {
-                System.out.print("  ");
-                // Print the name of the next state if a transition exists for the character
-            } else {
-                System.out.print(getNextStateOnAlphabet(alphabet[i]) + " ");
-            }
-        }
-        System.out.println();
-    }
-
     /**
      * Same method as printTransitionTableRow() above except it returns the string instead
      * of printing to the terminal
@@ -159,34 +116,19 @@ public class DFAState extends State {
      */
     @Override
     public String toString() {
-        String printString = "";
-        for (int i = 0; i < alphabet.length; i++) {
-            if (alphabet[i] == '\u0000') {
-                break;
-            } else if (getNextStateOnAlphabet(alphabet[i]) == null) {
-                printString += "  ";
-            } else {
-                printString += getNextStateOnAlphabet(alphabet[i]) + " ";
-            }
+
+        String returnString = this.getName() + "\n";
+
+        Set<Character> keySet = transitionsOut.keySet();
+
+        for(Character c : keySet) {
+
+            returnString = returnString.concat("\t" + c + " -> " + transitionsOut.get(c) + "\n");
+
         }
-        printString += "\n";
-        return printString;
+
+        return returnString;
+
     }
 
-    /**
-     * Method used for testing if the alphabet array was being updated correctly.
-     * Prints all characters in the alphabet to the terminal until the first null
-     * character is reached. Adds white space in between each character printed
-     */
-    public void printAlphabet() {
-        for (int i = 0; i < alphabet.length; i++) {
-            if (alphabet[i] == '\u0000') {
-                System.out.println();
-                return;
-            } else {
-                System.out.print(alphabet[i] + "  ");
-            }
-        }
-        System.out.println();
-    }
 }
