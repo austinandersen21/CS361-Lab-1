@@ -258,8 +258,8 @@ public class DFA implements DFAInterface {
 		Iterator<Character> itr = sigma.iterator();
 		while(itr.hasNext()) {
 
-
 			newDFA.addSigma(itr.next().charValue());
+
 		}
 		
 		//Now iterate through each state
@@ -269,22 +269,64 @@ public class DFA implements DFAInterface {
 
 		while(itr.hasNext()) {
 
+			//Create new state for newDFA
 			curr = stateItr.next();
 			newState = new DFAState(curr.getName());
 
+			//Determine if is start and/or is final
 			newState.setFinal(curr.getIsFinal());
 			newState.setStart(curr.getIsStart());
 
 			//Iterate through transitions
-			
+			HashMap<Character, String> map = curr.getTransitionOut();
 
+			//Iterate through each transition character in sigma
+			for(Character e : sigma) {
+
+				//If transition exists, create transition for newState
+				if(map.get(e) != null) {
+
+					if(e == symbol1) {
+
+						//Switch transitions on symb1 to symb2
+						newState.setTransitionOut(symb2, map.get(e));
+						
+					} else if(e == symbol2) {
+
+						//Switch transitions on symb2 to symb1
+						newState.setTransitionOut(symb1, map.get(e));
+
+					} else {
+
+						//Add transition as is
+						newState.setTransitionOut(e.charValue(), map.get(e));
+
+					}
+
+				}
+
+			}
 			
+			//Add newState with new transitions
 			newDFA.addState(newState);
+
+			/* Finish 5-tuple variables */
+
+			//Set state to startState if state isStart
+			if(newState.getIsStart()) {
+				newDFA.setStart(newState.getName());
+			}
+
+			//Add state to final set if state isFinal
+			if(newState.getIsFinal()) {
+				newDFA.setFinal(newState.getName());
+			}
 
 		}
 
-		// TODO Auto-generated method stub
-		return null;
+		//Return swapped DFA
+		return newDFA;
+
 	}
 
 
