@@ -117,8 +117,21 @@ public class DFA implements DFAInterface {
 			if(!currTransitions.containsKey(currentCharInString)) {
 				return false;
 			}
-			// If a valid transitionOut is found, store the next state in tempDFAState
-			DFAState tempDFAState = new DFAState(currTransitions.get(currentCharInString));
+			// Get the name of the to state
+			String toState = currTransitions.get(currentCharInString);
+
+			// create a state object to store the to state temporarily
+			DFAState tempDFAState = new DFAState("temp");
+
+			// Iterate through the states linkedhashset to get the to state ojbect
+			for (DFAState state: states) {
+				if (state.getName().equals(toState)) {
+					tempDFAState = state;
+					break;
+				} else {
+					System.out.println("The accepts method couldn't find a to state that should be in the set");
+				}
+			}
 			// Set the current state to the temp state for the next iteration of the loop
 			// or loop exit
 			curr = tempDFAState;
