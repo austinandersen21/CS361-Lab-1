@@ -90,27 +90,47 @@ public class DFA implements DFAInterface {
 		
 	}
 
-	//FIXME
+
+	/**
+	 * Takes any string and iterates through each character to see if the string
+	 * follows a path of valid transitions through the DFA states to a final state.
+	 * If the string ends on a valid final state then returns true.
+	 *
+	 * @param s - the input string
+	 * @return boolean confirming if string is accepted by DFA or not
+	 */
 	@Override
 	public boolean accepts(String s) {
 		
-		int i = 0;
-		DFAState curr = startState;
-		HashMap<Character, String> currTransitions = null;
+		int i = 0; // int to track the current char of the string
+		DFAState curr = startState; // Tracks the current state in the DFA on each transition
+		HashMap<Character, String> currTransitions = null; // Valid transitions for the state
 
+		// Will iterate through the string until all characters are exhausted
 		while(i < s.length()) {
 
+			// Get HashMap of valid transitions out of the current state
 			currTransitions = curr.getTransitionOut();
-
-			if(currTransitions.get(Character.valueOf(s.charAt[i])) != null) {
-
-				//Take transition
-
+			// Get the current char in the string
+			char currentCharInString = s.charAt(i);
+			// Return false if there are no valid transitions out of the state on the char
+			if(!currTransitions.containsKey(currentCharInString)) {
+				return false;
 			}
+			// If a valid transitionOut is found, store the next state in tempDFAState
+			DFAState tempDFAState = new DFAState(currTransitions.get(currentCharInString));
+			// Set the current state to the temp state for the next iteration of the loop
+			// or loop exit
+			curr = tempDFAState;
 
-			int++;
-
+			i++; // Increment to the next char in the string
 		}
+		// Will only reach here if the string has been exhausted through valid transitions
+		// and is at final state
+		if (curr.getIsFinal()) {
+			return true;
+		}
+		// Returns false if a final state is not reached
 		return false;
 	}
 
