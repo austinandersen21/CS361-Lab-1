@@ -39,6 +39,13 @@ public class DFA implements DFAInterface {
 	}
 
 	//DONE
+	private boolean addState(DFAState newState) {
+
+		return states.add(newState);
+
+	}
+
+	//DONE
 	@Override
 	public boolean setFinal(String name) {
 		
@@ -218,7 +225,7 @@ public class DFA implements DFAInterface {
 		boolean hasSymb = false;
 
 		//Check if onSymb is in sigma
-		Iterator itr = sigma.iterator();
+		Iterator<Character> itr = sigma.iterator();
 		while(itr.hasNext()) {
 			if(itr.next() == symbol) {
 				hasSymb = true;
@@ -245,24 +252,34 @@ public class DFA implements DFAInterface {
 		Character symbol2 = Character.valueOf(symb2);
 
 		DFA newDFA = new DFA();
-		char addSymb = '1';
+		//char addSymb = '1';
 
 		//Create newDFA's sigma set
-		Iterator itr = sigma.iterator();
+		Iterator<Character> itr = sigma.iterator();
 		while(itr.hasNext()) {
 
 
 			newDFA.addSigma(itr.next().charValue());
 		}
 		
-		itr = states.iterator();
+		//Now iterate through each state
+		Iterator<DFAState> stateItr = states.iterator();
 		DFAState curr = null;
+		DFAState newState = null;
 
 		while(itr.hasNext()) {
 
-			curr = itr.next();
+			curr = stateItr.next();
+			newState = new DFAState(curr.getName());
+
+			newState.setFinal(curr.getIsFinal());
+			newState.setStart(curr.getIsStart());
+
+			//Iterate through transitions
+			
 
 			
+			newDFA.addState(newState);
 
 		}
 
