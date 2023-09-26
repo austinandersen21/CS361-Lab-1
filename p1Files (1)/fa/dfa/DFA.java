@@ -336,9 +336,7 @@ public class DFA implements DFAInterface {
 
 	@Override
 	public String toString() {
-		String printString = "";
-
-		printString += "Q = { ";
+		String printString = "Q = { ";
 
 		for (DFAState state: states) {
 			printString += state.getName() + " ";
@@ -348,8 +346,9 @@ public class DFA implements DFAInterface {
 		printString += "Sigma = { ";
 		String sigmaString = "";
 		for (Character c : sigma) {
-			sigmaString += (c + " ");
+			sigmaString += c + " ";
 		}
+		printString += sigmaString;
 		printString +="}\n";
 		printString +="delta =\n";
 		printString += "\t" + sigmaString + "\n";
@@ -357,7 +356,7 @@ public class DFA implements DFAInterface {
 		for (DFAState state: states) {
 			printString += state.toString();
 		}
-		printString += "q0 = " + startState.getName();
+		printString += "q0 = " + startState.getName() + "\n";
 
 		printString += "F = { ";
 

@@ -159,7 +159,7 @@ public class DFAState extends State {
      */
     @Override
     public String toString() {
-        String printString = "";
+        String printString = super.toString() + "\t";
         for (int i = 0; i < alphabet.length; i++) {
             if (alphabet[i] == '\u0000') {
                 break;
