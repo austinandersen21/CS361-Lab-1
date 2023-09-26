@@ -354,7 +354,7 @@ public class DFA implements DFAInterface {
 		printString += "\t" + sigmaString + "\n";
 
 		for (DFAState state: states) {
-			printString += state.toString();
+			printString += state.toString(sigma);
 		}
 		printString += "q0 = " + startState.getName() + "\n";
 
