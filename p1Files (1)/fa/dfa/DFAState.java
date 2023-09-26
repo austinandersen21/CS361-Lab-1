@@ -3,6 +3,7 @@ package fa.dfa;
 import fa.State;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Set;
 
 public class DFAState extends State {
     private HashMap<Character, String> transitionsOut;
@@ -129,32 +130,10 @@ public class DFAState extends State {
 
 
     /**
-     * Prints the state and all possible transition states. If the states
-     * alphabet is kept updated with all possible states in the DFA then it
-     * will print a blank space instead of a state name.
-     */
-    public void printTransitionTableRow() {
-        // Print the states name with a tab after
-        System.out.print(super.toString() + "\t");
-        // Iterate through the alphabet array until the first null character
-        for (int i = 0; i < alphabet.length; i++) {
-            if (alphabet[i] == '\u0000') {
-                break;
-                // Print a blank space on alphabet characters that don't have a transition
-                // for this state
-            } else if (getNextStateOnAlphabet(alphabet[i]) == null) {
-                System.out.print("  ");
-                // Print the name of the next state if a transition exists for the character
-            } else {
-                System.out.print(getNextStateOnAlphabet(alphabet[i]) + " ");
-            }
-        }
-        System.out.println();
-    }
-
-    /**
-     * Same method as printTransitionTableRow() above except it returns the string instead
-     * of printing to the terminal
+     * Uses the alphabet known to the state return the transitions out of the state.
+     * This is based on the known alphabet to the state so may not return the full alphabet
+     * of the DFA. Also, the alphabet is created in the order of transitions that are added
+     * to the state so may not be in the order of the sigma known to the DFA.
      * @return the toString that represents the State's row in the transition table
      */
     @Override
@@ -166,6 +145,7 @@ public class DFAState extends State {
             } else if (getNextStateOnAlphabet(alphabet[i]) == null) {
                 printString += "  ";
             } else {
+                System.out.println("On: " + alphabet[i] + " Go to: " + getNextStateOnAlphabet(alphabet[i]));
                 printString += getNextStateOnAlphabet(alphabet[i]) + " ";
             }
         }
@@ -173,20 +153,23 @@ public class DFAState extends State {
         return printString;
     }
 
-    /**
-     * Method used for testing if the alphabet array was being updated correctly.
-     * Prints all characters in the alphabet to the terminal until the first null
-     * character is reached. Adds white space in between each character printed
-     */
-    public void printAlphabet() {
-        for (int i = 0; i < alphabet.length; i++) {
-            if (alphabet[i] == '\u0000') {
-                System.out.println();
-                return;
-            } else {
-                System.out.print(alphabet[i] + "  ");
+    public String toString(Set<Character> sigma) {
+        String printString = super.toString() + "\t";
+
+        for (char c : sigma) {
+            for (int i = 0; i < alphabet.length; i++) {
+                if (alphabet[i] == c) {
+                    printString += getNextStateOnAlphabet(alphabet[i]) + " ";
+                    break;
+                }
+
+                if (alphabet[i] == '\u0000') {
+                    printString += "  ";
+                    break;
+                }
             }
+
         }
-        System.out.println();
+        return printString;
     }
 }
