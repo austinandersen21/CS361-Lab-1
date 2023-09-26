@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.Set;
 
 /**
- * @author Austin Andersen and Shane Ball
  * @class CS361
  * @date September 25th 2023
  * This class maintains a state that can be used in a DFA. The state holds
  * information that identifies if it is a starting and/or a final state and
  * all of its possible outgoing transitions.
+ * @author Austin Andersen and Shane Ball
  */
 public class DFAState extends State {
     private HashMap<Character, String> transitionsOut;

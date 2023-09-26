@@ -9,12 +9,12 @@ import fa.dfa.DFAState;
 import fa.State;
 
 /**
- * @author Austin Andersen and Shane Ball
- * @class CS361
- * @date September 25th 2023
  * This class is intended to allow a driver class to create a DFA object
  * using the DFAState class. It implements DFAInterface methods, as well
  * as FAInterface methods
+ * @class CS361
+ * @date September 25th 2023
+ * @author Austin Andersen and Shane Ball
  */
 public class DFA implements DFAInterface {
 	
@@ -41,23 +41,28 @@ public class DFA implements DFAInterface {
 		DFAState newState = null;
 		newState = new DFAState(name);
 
+		// Search through all states in the DFA to see if the state name exists
 		for (DFAState state: states) {
 			if (state.getName().equals(newState.getName())) {
-				return false;
+				return false; // if it does exist exit without adding
 			}
 		}
-		return states.add(newState);
+		return states.add(newState); // if it doesn't exist add and return true
 	}
 
-	//DONE
+	/**
+	 * Given a state object will check the DFA to see if the state is added or not
+	 * @param newState to be added
+	 * @return boolean of if state is added or not
+	 */
 	private boolean addState(DFAState newState) {
+		// Check if the state is already in the DFA
 		if (!states.contains(newState)) {
-			return states.add(newState);
+			return states.add(newState); // If not add the state and return true
 		}
-		return false;
+		return false; // If yes exit and return false
 	}
 
-	//DONE
 	@Override
 	public boolean setFinal(String name) {
 		
@@ -76,7 +81,6 @@ public class DFA implements DFAInterface {
 		return false;
 	}
 
-	//DONE
 	@Override
 	public boolean setStart(String name) {
 		
@@ -97,7 +101,7 @@ public class DFA implements DFAInterface {
 		return false;
 	}
 
-	//DONE
+
 	@Override
 	public void addSigma(char symbol) {
 
@@ -164,14 +168,14 @@ public class DFA implements DFAInterface {
 		return false;
 	}
 
-	//DONE
+
 	@Override
 	public Set<Character> getSigma() {
 		
 		return sigma;
 	}
 
-	//DONE
+
 	@Override
 	public DFAState getState(String name) {
 		//Search states array to find one with matching name
@@ -193,7 +197,7 @@ public class DFA implements DFAInterface {
 
 	}
 
-	//DONE
+
 	@Override
 	public boolean isFinal(String name) {
 		
@@ -201,7 +205,6 @@ public class DFA implements DFAInterface {
 		return curr.getIsFinal();
 
 	}
-
 
 	@Override
 	public boolean isStart(String name) {
@@ -214,7 +217,6 @@ public class DFA implements DFAInterface {
 
 	}
 
-	//DONE
 	@Override
 	public boolean addTransition(String fromState, String toState, char onSymb) {
 		
@@ -256,7 +258,6 @@ public class DFA implements DFAInterface {
 
 	@Override
 	public DFA swap(char symb1, char symb2) {
-
 		//Convert char values to Character values
 		Character symbol1 = Character.valueOf(symb1);
 		Character symbol2 = Character.valueOf(symb2);
@@ -271,7 +272,6 @@ public class DFA implements DFAInterface {
 			newDFA.addSigma(itr.next().charValue());
 
 		}
-		
 		//Now iterate through each state
 		Iterator<DFAState> stateItr = states.iterator();
 		DFAState curr = null;
@@ -297,26 +297,19 @@ public class DFA implements DFAInterface {
 				if(map.get(e) != null) {
 
 					if(e == symbol1) {
-
 						//Switch transitions on symb1 to symb2
 						newState.setTransitionOut(symb2, map.get(e));
 						
 					} else if(e == symbol2) {
-
 						//Switch transitions on symb2 to symb1
 						newState.setTransitionOut(symb1, map.get(e));
 
 					} else {
-
 						//Add transition as is
 						newState.setTransitionOut(e.charValue(), map.get(e));
-
 					}
-
 				}
-
 			}
-			
 			//Add newState with new transitions
 			newDFA.addState(newState);
 
@@ -326,33 +319,28 @@ public class DFA implements DFAInterface {
 			if(newState.getIsStart()) {
 				newDFA.setStart(newState.getName());
 			}
-
 			//Add state to final set if state isFinal
 			if(newState.getIsFinal()) {
 				newDFA.setFinal(newState.getName());
 			}
-
 		}
-
 		//Return swapped DFA
 		return newDFA;
-
 	}
-
-
 
 	@Override
 	public String toString() {
 		String printString = "Q = { ";
 
+		// Iterate through states and add them all the names to Q
 		for (DFAState state: states) {
 			printString += state.getName() + " ";
 		}
 		printString += "}\n";
 
 		printString += "Sigma = { ";
-		String sigmaString = "";
-		for (Character c : sigma) {
+		String sigmaString = ""; // Create a string that stores sigma since it is used later
+		for (Character c : sigma) { // Iterate through the sigma set and add each char to sigmaString
 			sigmaString += c + " ";
 		}
 		printString += sigmaString;
@@ -360,13 +348,16 @@ public class DFA implements DFAInterface {
 		printString +="delta =\n";
 		printString += "\t" + sigmaString + "\n";
 
+		// Iterate through the states and get each states toString for their transition table
+		// based on the order of the DFAs sigma
 		for (DFAState state: states) {
-			printString += state.toString(sigma);
+			printString += state.toString(sigma) + "\n";
 		}
 		printString += "q0 = " + startState.getName() + "\n";
 
 		printString += "F = { ";
 
+		// Iterate through finalStates and get the name of all final states
 		for (DFAState state: finalStates) {
 			printString += state.getName() + " ";
 		}
