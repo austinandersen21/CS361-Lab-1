@@ -1,10 +1,17 @@
 package fa.dfa;
 
 import fa.State;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
 
+/**
+ * @author Austin Andersen and Shane Ball
+ * @class CS361
+ * @date September 25th 2023
+ * This class maintains a state that can be used in a DFA. The state holds
+ * information that identifies if it is a starting and/or a final state and
+ * all of its possible outgoing transitions.
+ */
 public class DFAState extends State {
     private HashMap<Character, String> transitionsOut;
     private boolean isStart;
@@ -153,22 +160,32 @@ public class DFAState extends State {
         return printString;
     }
 
+    /**
+     * The state's alphabet array may be updated to a different order of sigma than the DFA
+     * holds. When printing the entire transition table for the DFA, this method can be called
+     * by the DFA to get the transitions for the transition table in the DFA's order of sigma
+     * @param sigma of the DFA
+     * @return String representation of that State's row in the transition table
+     */
     public String toString(Set<Character> sigma) {
         String printString = super.toString() + "\t";
 
+        // Iterate through the sigma set and check if the sigma character is in the state's
+        // known alphabet
         for (char c : sigma) {
             for (int i = 0; i < alphabet.length; i++) {
-                if (alphabet[i] == c) {
+                if (alphabet[i] == c) { // if the sigma character is in the state's alphabet
+                    // add the to state and a space to the String
                     printString += getNextStateOnAlphabet(alphabet[i]) + " ";
                     break;
                 }
-
+                // If it isn't in the alphabet go insert a double space to represent
+                // that there is no outgoing transition on that character
                 if (alphabet[i] == '\u0000') {
                     printString += "  ";
                     break;
                 }
             }
-
         }
         return printString;
     }

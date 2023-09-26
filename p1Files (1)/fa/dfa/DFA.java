@@ -4,12 +4,18 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.HashMap;
-
 import javax.sound.midi.Sequence;
-
 import fa.dfa.DFAState;
 import fa.State;
 
+/**
+ * @author Austin Andersen and Shane Ball
+ * @class CS361
+ * @date September 25th 2023
+ * This class is intended to allow a driver class to create a DFA object
+ * using the DFAState class. It implements DFAInterface methods, as well
+ * as FAInterface methods
+ */
 public class DFA implements DFAInterface {
 	
 	/* DFA 5-tuple */
@@ -247,7 +253,7 @@ public class DFA implements DFAInterface {
 
 	}
 
-	//FIXME
+
 	@Override
 	public DFA swap(char symb1, char symb2) {
 
@@ -332,6 +338,7 @@ public class DFA implements DFAInterface {
 		return newDFA;
 
 	}
+
 
 
 	@Override
