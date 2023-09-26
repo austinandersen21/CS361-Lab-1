@@ -119,8 +119,12 @@ public class DFA implements DFAInterface {
 		// Will iterate through the string until all characters are exhausted
 		while(i < s.length()) {
 
-			// Get HashMap of valid transitions out of the current state
-			currTransitions = curr.getTransitionOut();
+			// Get HashMap of valid transitions out of the current state and set to currTransitions
+			// Also exit if curr or curr.getTransitionOut is null
+			if (curr == null || (currTransitions = curr.getTransitionOut()) == null) {
+				return false;
+			}
+
 			// Get the current char in the string
 			char currentCharInString = s.charAt(i);
 			// Return false if there are no valid transitions out of the state on the char
@@ -138,14 +142,11 @@ public class DFA implements DFAInterface {
 				if (state.getName().equals(toState)) {
 					tempDFAState = state;
 					break;
-				} else {
-					System.out.println("The accepts method couldn't find a to state that should be in the set");
 				}
 			}
 			// Set the current state to the temp state for the next iteration of the loop
 			// or loop exit
 			curr = tempDFAState;
-
 			i++; // Increment to the next char in the string
 		}
 		// Will only reach here if the string has been exhausted through valid transitions
