@@ -40,9 +40,7 @@ public class DFA implements DFAInterface {
 
 	//DONE
 	private boolean addState(DFAState newState) {
-
 		return states.add(newState);
-
 	}
 
 	//DONE
@@ -58,13 +56,10 @@ public class DFA implements DFAInterface {
 				
 				curr.setFinal(true); 
 				finalStates.add(curr);
-				
+				return true;
 			}
-			
-		}	
-		
+		}
 		return false;
-		
 	}
 
 	//DONE
