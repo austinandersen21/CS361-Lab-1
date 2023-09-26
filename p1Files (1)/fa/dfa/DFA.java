@@ -34,13 +34,21 @@ public class DFA implements DFAInterface {
 
 		DFAState newState = null;
 		newState = new DFAState(name);
-		return states.add(newState);
 
+		for (DFAState state: states) {
+			if (state.getName().equals(newState.getName())) {
+				return false;
+			}
+		}
+		return states.add(newState);
 	}
 
 	//DONE
 	private boolean addState(DFAState newState) {
-		return states.add(newState);
+		if (!states.contains(newState)) {
+			return states.add(newState);
+		}
+		return false;
 	}
 
 	//DONE
