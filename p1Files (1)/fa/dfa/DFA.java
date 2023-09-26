@@ -271,7 +271,7 @@ public class DFA implements DFAInterface {
 		DFAState curr = null;
 		DFAState newState = null;
 
-		while(itr.hasNext()) {
+		while(stateItr.hasNext()) {
 
 			//Create new state for newDFA
 			curr = stateItr.next();
